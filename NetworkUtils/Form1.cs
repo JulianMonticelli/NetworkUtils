@@ -72,8 +72,6 @@ namespace NetworkUtils
             }
             else
             {
-                //if (pingQuery != null)
-                //{
                 pingQuery.Stop();
                 pingQuery = null;
                 pingThread = null;
@@ -194,7 +192,7 @@ namespace NetworkUtils
 
         private void stressTestButtonClick(object sender, EventArgs e)
         {
-            if (!performingNetworkTask && !runningStressTest)
+            if (!runningStressTest)
             {
                 bool isUDP = udpRadioButton.Checked;
                 int packetLimit = (int)packetLimitUpDown.Value;
@@ -205,9 +203,11 @@ namespace NetworkUtils
                 long packetDelay = 0;
                 string packetContents = "desu~~"; // In honor of LOIC
 
+                ToggleStressTestButton();
+
                 stressTest = new NetworkUtilities.StressTest
                     (isUDP, packetLimit, packetDelay,
-                    packetContents, port, _IPAddress);
+                    packetContents, port, _IPAddress, this);
 
 
                 // Delegate events for asynchronous control of Windows Forms

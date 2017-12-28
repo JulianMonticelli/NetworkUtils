@@ -32,6 +32,7 @@
             this.outputTextBox = new System.Windows.Forms.TextBox();
             this.pingButton = new System.Windows.Forms.Button();
             this.pingGroupBox = new System.Windows.Forms.GroupBox();
+            this.pingProgressBar = new System.Windows.Forms.ProgressBar();
             this.pingDelayLabel = new System.Windows.Forms.Label();
             this.pingDelayPingInput = new System.Windows.Forms.NumericUpDown();
             this.pingBufferSizeLabel = new System.Windows.Forms.Label();
@@ -44,21 +45,20 @@
             this.ttlLabel = new System.Windows.Forms.Label();
             this.numTimesLabel = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.portLabel = new System.Windows.Forms.Label();
+            this.portNumberSelector = new System.Windows.Forms.NumericUpDown();
+            this.stressTestButton = new System.Windows.Forms.Button();
+            this.packetLimitLabel = new System.Windows.Forms.Label();
+            this.packetLimitUpDown = new System.Windows.Forms.NumericUpDown();
+            this.tcpUdpGroupBox = new System.Windows.Forms.GroupBox();
+            this.udpRadioButton = new System.Windows.Forms.RadioButton();
+            this.tcpRadioButton = new System.Windows.Forms.RadioButton();
             this.IPAddressGroupBox = new System.Windows.Forms.GroupBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.IPAddressTextBox2 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.IPAddress1Label = new System.Windows.Forms.Label();
             this.IPAddressTextBox1 = new System.Windows.Forms.TextBox();
-            this.pingProgressBar = new System.Windows.Forms.ProgressBar();
-            this.tcpUdpGroupBox = new System.Windows.Forms.GroupBox();
-            this.tcpRadioButton = new System.Windows.Forms.RadioButton();
-            this.udpRadioButton = new System.Windows.Forms.RadioButton();
-            this.packetLimitUpDown = new System.Windows.Forms.NumericUpDown();
-            this.packetLimitLabel = new System.Windows.Forms.Label();
-            this.stressTestButton = new System.Windows.Forms.Button();
-            this.portNumberSelector = new System.Windows.Forms.NumericUpDown();
-            this.portLabel = new System.Windows.Forms.Label();
             this.pingGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pingDelayPingInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bufferSizePingInput)).BeginInit();
@@ -66,10 +66,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.ttlPingInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numTimesPingInput)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.IPAddressGroupBox.SuspendLayout();
-            this.tcpUdpGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.packetLimitUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.portNumberSelector)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.packetLimitUpDown)).BeginInit();
+            this.tcpUdpGroupBox.SuspendLayout();
+            this.IPAddressGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // outputTextBox
@@ -127,6 +127,13 @@
             this.pingGroupBox.TabIndex = 4;
             this.pingGroupBox.TabStop = false;
             this.pingGroupBox.Text = "Ping";
+            // 
+            // pingProgressBar
+            // 
+            this.pingProgressBar.Location = new System.Drawing.Point(5, 191);
+            this.pingProgressBar.Name = "pingProgressBar";
+            this.pingProgressBar.Size = new System.Drawing.Size(162, 23);
+            this.pingProgressBar.TabIndex = 19;
             // 
             // pingDelayLabel
             // 
@@ -292,6 +299,117 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Stress Test";
             // 
+            // portLabel
+            // 
+            this.portLabel.AutoSize = true;
+            this.portLabel.Location = new System.Drawing.Point(6, 94);
+            this.portLabel.Name = "portLabel";
+            this.portLabel.Size = new System.Drawing.Size(34, 17);
+            this.portLabel.TabIndex = 6;
+            this.portLabel.Text = "Port";
+            // 
+            // portNumberSelector
+            // 
+            this.portNumberSelector.BackColor = System.Drawing.Color.Black;
+            this.portNumberSelector.ForeColor = System.Drawing.Color.Lime;
+            this.portNumberSelector.Location = new System.Drawing.Point(46, 92);
+            this.portNumberSelector.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.portNumberSelector.Name = "portNumberSelector";
+            this.portNumberSelector.Size = new System.Drawing.Size(70, 23);
+            this.portNumberSelector.TabIndex = 5;
+            this.portNumberSelector.Value = new decimal(new int[] {
+            80,
+            0,
+            0,
+            0});
+            // 
+            // stressTestButton
+            // 
+            this.stressTestButton.BackColor = System.Drawing.Color.Green;
+            this.stressTestButton.ForeColor = System.Drawing.Color.White;
+            this.stressTestButton.Location = new System.Drawing.Point(6, 220);
+            this.stressTestButton.Name = "stressTestButton";
+            this.stressTestButton.Size = new System.Drawing.Size(110, 26);
+            this.stressTestButton.TabIndex = 4;
+            this.stressTestButton.Text = "Fire";
+            this.stressTestButton.UseVisualStyleBackColor = false;
+            this.stressTestButton.Click += new System.EventHandler(this.stressTestButtonClick);
+            // 
+            // packetLimitLabel
+            // 
+            this.packetLimitLabel.AutoSize = true;
+            this.packetLimitLabel.Location = new System.Drawing.Point(6, 169);
+            this.packetLimitLabel.Name = "packetLimitLabel";
+            this.packetLimitLabel.Size = new System.Drawing.Size(84, 17);
+            this.packetLimitLabel.TabIndex = 3;
+            this.packetLimitLabel.Text = "Packet Limit";
+            // 
+            // packetLimitUpDown
+            // 
+            this.packetLimitUpDown.BackColor = System.Drawing.Color.Black;
+            this.packetLimitUpDown.ForeColor = System.Drawing.Color.Lime;
+            this.packetLimitUpDown.Increment = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.packetLimitUpDown.Location = new System.Drawing.Point(6, 191);
+            this.packetLimitUpDown.Maximum = new decimal(new int[] {
+            -1530494976,
+            232830,
+            0,
+            0});
+            this.packetLimitUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.packetLimitUpDown.Name = "packetLimitUpDown";
+            this.packetLimitUpDown.Size = new System.Drawing.Size(110, 23);
+            this.packetLimitUpDown.TabIndex = 2;
+            // 
+            // tcpUdpGroupBox
+            // 
+            this.tcpUdpGroupBox.BackColor = System.Drawing.Color.Black;
+            this.tcpUdpGroupBox.Controls.Add(this.udpRadioButton);
+            this.tcpUdpGroupBox.Controls.Add(this.tcpRadioButton);
+            this.tcpUdpGroupBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tcpUdpGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.tcpUdpGroupBox.ForeColor = System.Drawing.Color.Lime;
+            this.tcpUdpGroupBox.Location = new System.Drawing.Point(6, 18);
+            this.tcpUdpGroupBox.Name = "tcpUdpGroupBox";
+            this.tcpUdpGroupBox.Size = new System.Drawing.Size(110, 73);
+            this.tcpUdpGroupBox.TabIndex = 1;
+            this.tcpUdpGroupBox.TabStop = false;
+            this.tcpUdpGroupBox.Text = "TCP / UDP";
+            this.tcpUdpGroupBox.Enter += new System.EventHandler(this.tcpUdpGroupBox_Enter);
+            // 
+            // udpRadioButton
+            // 
+            this.udpRadioButton.AutoSize = true;
+            this.udpRadioButton.Location = new System.Drawing.Point(7, 46);
+            this.udpRadioButton.Name = "udpRadioButton";
+            this.udpRadioButton.Size = new System.Drawing.Size(55, 21);
+            this.udpRadioButton.TabIndex = 1;
+            this.udpRadioButton.Text = "UDP";
+            this.udpRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // tcpRadioButton
+            // 
+            this.tcpRadioButton.AutoSize = true;
+            this.tcpRadioButton.Checked = true;
+            this.tcpRadioButton.Location = new System.Drawing.Point(7, 19);
+            this.tcpRadioButton.Name = "tcpRadioButton";
+            this.tcpRadioButton.Size = new System.Drawing.Size(53, 21);
+            this.tcpRadioButton.TabIndex = 0;
+            this.tcpRadioButton.TabStop = true;
+            this.tcpRadioButton.Text = "TCP";
+            this.tcpRadioButton.UseVisualStyleBackColor = true;
+            // 
             // IPAddressGroupBox
             // 
             this.IPAddressGroupBox.Controls.Add(this.checkBox1);
@@ -301,9 +419,9 @@
             this.IPAddressGroupBox.Controls.Add(this.IPAddressTextBox1);
             this.IPAddressGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.IPAddressGroupBox.ForeColor = System.Drawing.Color.Lime;
-            this.IPAddressGroupBox.Location = new System.Drawing.Point(2, 12);
+            this.IPAddressGroupBox.Location = new System.Drawing.Point(2, 3);
             this.IPAddressGroupBox.Name = "IPAddressGroupBox";
-            this.IPAddressGroupBox.Size = new System.Drawing.Size(158, 166);
+            this.IPAddressGroupBox.Size = new System.Drawing.Size(158, 141);
             this.IPAddressGroupBox.TabIndex = 6;
             this.IPAddressGroupBox.TabStop = false;
             this.IPAddressGroupBox.Text = "IP Information";
@@ -363,124 +481,6 @@
             this.IPAddressTextBox1.Size = new System.Drawing.Size(146, 23);
             this.IPAddressTextBox1.TabIndex = 0;
             // 
-            // pingProgressBar
-            // 
-            this.pingProgressBar.Location = new System.Drawing.Point(5, 191);
-            this.pingProgressBar.Name = "pingProgressBar";
-            this.pingProgressBar.Size = new System.Drawing.Size(162, 23);
-            this.pingProgressBar.TabIndex = 19;
-            // 
-            // tcpUdpGroupBox
-            // 
-            this.tcpUdpGroupBox.BackColor = System.Drawing.Color.Black;
-            this.tcpUdpGroupBox.Controls.Add(this.udpRadioButton);
-            this.tcpUdpGroupBox.Controls.Add(this.tcpRadioButton);
-            this.tcpUdpGroupBox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.tcpUdpGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.tcpUdpGroupBox.ForeColor = System.Drawing.Color.Lime;
-            this.tcpUdpGroupBox.Location = new System.Drawing.Point(6, 18);
-            this.tcpUdpGroupBox.Name = "tcpUdpGroupBox";
-            this.tcpUdpGroupBox.Size = new System.Drawing.Size(110, 73);
-            this.tcpUdpGroupBox.TabIndex = 1;
-            this.tcpUdpGroupBox.TabStop = false;
-            this.tcpUdpGroupBox.Text = "TCP / UDP";
-            this.tcpUdpGroupBox.Enter += new System.EventHandler(this.tcpUdpGroupBox_Enter);
-            // 
-            // tcpRadioButton
-            // 
-            this.tcpRadioButton.AutoSize = true;
-            this.tcpRadioButton.Checked = true;
-            this.tcpRadioButton.Location = new System.Drawing.Point(7, 19);
-            this.tcpRadioButton.Name = "tcpRadioButton";
-            this.tcpRadioButton.Size = new System.Drawing.Size(53, 21);
-            this.tcpRadioButton.TabIndex = 0;
-            this.tcpRadioButton.TabStop = true;
-            this.tcpRadioButton.Text = "TCP";
-            this.tcpRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // udpRadioButton
-            // 
-            this.udpRadioButton.AutoSize = true;
-            this.udpRadioButton.Location = new System.Drawing.Point(7, 46);
-            this.udpRadioButton.Name = "udpRadioButton";
-            this.udpRadioButton.Size = new System.Drawing.Size(55, 21);
-            this.udpRadioButton.TabIndex = 1;
-            this.udpRadioButton.Text = "UDP";
-            this.udpRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // packetLimitUpDown
-            // 
-            this.packetLimitUpDown.BackColor = System.Drawing.Color.Black;
-            this.packetLimitUpDown.ForeColor = System.Drawing.Color.Lime;
-            this.packetLimitUpDown.Increment = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.packetLimitUpDown.Location = new System.Drawing.Point(6, 191);
-            this.packetLimitUpDown.Maximum = new decimal(new int[] {
-            -1530494976,
-            232830,
-            0,
-            0});
-            this.packetLimitUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.packetLimitUpDown.Name = "packetLimitUpDown";
-            this.packetLimitUpDown.Size = new System.Drawing.Size(110, 23);
-            this.packetLimitUpDown.TabIndex = 2;
-            // 
-            // packetLimitLabel
-            // 
-            this.packetLimitLabel.AutoSize = true;
-            this.packetLimitLabel.Location = new System.Drawing.Point(6, 169);
-            this.packetLimitLabel.Name = "packetLimitLabel";
-            this.packetLimitLabel.Size = new System.Drawing.Size(84, 17);
-            this.packetLimitLabel.TabIndex = 3;
-            this.packetLimitLabel.Text = "Packet Limit";
-            // 
-            // stressTestButton
-            // 
-            this.stressTestButton.BackColor = System.Drawing.Color.Green;
-            this.stressTestButton.ForeColor = System.Drawing.Color.White;
-            this.stressTestButton.Location = new System.Drawing.Point(6, 220);
-            this.stressTestButton.Name = "stressTestButton";
-            this.stressTestButton.Size = new System.Drawing.Size(110, 26);
-            this.stressTestButton.TabIndex = 4;
-            this.stressTestButton.Text = "Fire";
-            this.stressTestButton.UseVisualStyleBackColor = false;
-            this.stressTestButton.Click += new System.EventHandler(this.stressTestButtonClick);
-            // 
-            // portNumberSelector
-            // 
-            this.portNumberSelector.BackColor = System.Drawing.Color.Black;
-            this.portNumberSelector.ForeColor = System.Drawing.Color.Lime;
-            this.portNumberSelector.Location = new System.Drawing.Point(46, 92);
-            this.portNumberSelector.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.portNumberSelector.Name = "portNumberSelector";
-            this.portNumberSelector.Size = new System.Drawing.Size(70, 23);
-            this.portNumberSelector.TabIndex = 5;
-            this.portNumberSelector.Value = new decimal(new int[] {
-            80,
-            0,
-            0,
-            0});
-            // 
-            // portLabel
-            // 
-            this.portLabel.AutoSize = true;
-            this.portLabel.Location = new System.Drawing.Point(6, 94);
-            this.portLabel.Name = "portLabel";
-            this.portLabel.Size = new System.Drawing.Size(34, 17);
-            this.portLabel.TabIndex = 6;
-            this.portLabel.Text = "Port";
-            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -503,12 +503,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.numTimesPingInput)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.IPAddressGroupBox.ResumeLayout(false);
-            this.IPAddressGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.portNumberSelector)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.packetLimitUpDown)).EndInit();
             this.tcpUdpGroupBox.ResumeLayout(false);
             this.tcpUdpGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.packetLimitUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.portNumberSelector)).EndInit();
+            this.IPAddressGroupBox.ResumeLayout(false);
+            this.IPAddressGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

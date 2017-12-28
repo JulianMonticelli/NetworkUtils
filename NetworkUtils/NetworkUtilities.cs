@@ -38,16 +38,18 @@ namespace NetworkUtils
             private string packetContents = "";
             private int port = 0;
             private int iterator = 0;
+            private mainForm formReference;
             IPAddress ip = null;
 
             public StressTest(bool isUDP, int packetLimit, long packetDelay,
-                string packetContents, int port, String _IPAddress)
+                string packetContents, int port, String _IPAddress, mainForm formReference)
             {
                 this.isUDP = isUDP;
                 this.packetLimit = packetLimit;
                 this.packetDelay = packetDelay;
                 this.packetContents = packetContents;
                 this.port = port;
+                this.formReference = formReference;
                 ip = NetworkUtilities.StringToIPAddress(_IPAddress);
 
                 // Packet limit <= 0 will result in an infinite loop
@@ -57,7 +59,7 @@ namespace NetworkUtils
                 }
                 else
                 {
-                    packetLimit = 1;
+                    this.packetLimit = 1;
                 }
             }
 
@@ -75,13 +77,17 @@ namespace NetworkUtils
                         sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
                             protocolType);
                     else
+                    {
                         sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                             protocolType);
+                        sock.Connect(ip, port);
+                    }
                 }
                 catch (System.Exception e)
                 {
-                    Console.WriteLine(e.StackTrace);
+                    formReference.AppendTextBox(e.StackTrace);
                     OnStressTestFinished();
+                    return;
                 }
                 byte[] buffer = Encoding.ASCII.GetBytes(packetContents.ToCharArray());
                 for (int i = 0; i < packetLimit; i += iterator)
@@ -119,10 +125,14 @@ namespace NetworkUtils
 
             public void sendPacket(IPEndPoint ipep, byte[] buffer, Socket sock)
             {
-                // TODO: Fire and forget
-                Console.WriteLine("Sent a packet");
-                Console.Out.Flush();
-                sock.SendTo(buffer, ipep);
+                try
+                {
+                    sock.SendTo(buffer, ipep);
+                }
+                catch (SocketException e)
+                {
+                    formReference.AppendTextBox(e.StackTrace);
+                }
             }
 
             private void OnStressTestFinished()
@@ -130,7 +140,7 @@ namespace NetworkUtils
                 StressTestFinished(this, EventArgs.Empty);
             }
 
-
+            
         }
 
         public class PingQuery
