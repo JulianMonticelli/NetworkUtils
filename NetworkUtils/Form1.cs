@@ -17,18 +17,49 @@ namespace NetworkUtils
         private bool runningStressTest = false;
         private bool performingNetworkTask = false;
 
+        NetworkUtilities.StressTest stressTest;
         NetworkUtilities.PingQuery pingQuery;
+
         private System.Threading.Thread pingThread;
-        
+        private System.Threading.Thread stressTestThread;
 
         public void OnPingQueryFinished(object source, EventArgs a)
         {
-            Console.WriteLine("THE OPQF HAS EXECUTED");
             if (InvokeRequired)
             {
                 Invoke(new Action(TogglePingButton));
+                Invoke(new Action(() =>
+                {
+                    if (pingProgressBar.Value < 100)
+                    {
+                        pingProgressBar.Value = 0;
+                    }
+                }
+                ));
             }
         }
+
+        public void OnPingQueryStatusChanged(object source, NetworkUtilities.ProgressEventArgs a)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    pingProgressBar.Value = (int)(((float)a.current / a.maximum) * 100);
+                    pingProgressBar.Maximum = a.maximum;
+                }
+                ));
+            }
+        }
+
+        public void OnStressTestFinished(object source, EventArgs a)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(ToggleStressTestButton));
+            }
+        }
+
 
         public void TogglePingButton()
         {
@@ -41,7 +72,9 @@ namespace NetworkUtils
             }
             else
             {
-                pingQuery.Stop(); // Stop it, even if it stopped normally
+                //if (pingQuery != null)
+                //{
+                pingQuery.Stop();
                 pingQuery = null;
                 pingThread = null;
                 pingButton.BackColor = Color.Green;
@@ -50,12 +83,31 @@ namespace NetworkUtils
         }
 
 
+        public void ToggleStressTestButton()
+        {
+            runningStressTest = !runningStressTest;
+            performingNetworkTask = runningStressTest;
+            if (runningStressTest)
+            {
+                stressTestButton.BackColor = Color.Red;
+                stressTestButton.Text = "Stop";
+            }
+            else
+            {
+                stressTest.Stop(); 
+                stressTest = null;
+                stressTestThread = null;
+                stressTestButton.BackColor = Color.Green;
+                stressTestButton.Text = "Fire";
+            }
+        }
+
         public mainForm()
         {
             InitializeComponent();
         }
 
-        
+
 
         private void pingButton_Click(object sender, EventArgs e)
         {
@@ -67,7 +119,7 @@ namespace NetworkUtils
                 int buffSize = (int)bufferSizePingInput.Value;
                 int pingDelay = (int)pingDelayPingInput.Value;
                 bool fragmentPing = fragmentPingInput.Checked;
-                
+
 
                 TogglePingButton();
 
@@ -76,7 +128,10 @@ namespace NetworkUtils
                     numTimes, ttl, timeOut, buffSize, pingDelay,
                     fragmentPing, this);
 
+                // Delegate events for asynchronous control of Windows Forms
+                // and update of ping status
                 pingQuery.PingQueryFinished += OnPingQueryFinished;
+                pingQuery.PingQueryStatusChanged += OnPingQueryStatusChanged;
 
                 pingThread = new System.Threading.Thread(new
                     System.Threading.ThreadStart(
@@ -94,14 +149,14 @@ namespace NetworkUtils
                     pingQuery.Stop();
                 }
             }
-            
+
         }
 
         public void AppendTextBox(string value)
         {
             if (InvokeRequired)
             {
-                
+
                 try
                 {
                     this.Invoke(new Action<string>(AppendTextBox), new object[] { value });
@@ -110,11 +165,11 @@ namespace NetworkUtils
                 {
                     Console.WriteLine("EXCEPTION CAUGHT");
                     Console.WriteLine(e.GetType());
-                    Console.WriteLine(e.StackTrace); //
+                    Console.WriteLine(e.StackTrace);
                 }
                 return;
             }
-            outputTextBox.Text += value;
+            outputTextBox.AppendText(value);
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -130,6 +185,50 @@ namespace NetworkUtils
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void tcpUdpGroupBox_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void stressTestButtonClick(object sender, EventArgs e)
+        {
+            if (!performingNetworkTask && !runningStressTest)
+            {
+                bool isUDP = udpRadioButton.Checked;
+                int packetLimit = (int)packetLimitUpDown.Value;
+                int port = (int)portNumberSelector.Value;
+                string _IPAddress = IPAddressTextBox1.Text;
+
+                // Not yet implemented:
+                long packetDelay = 0;
+                string packetContents = "desu~~"; // In honor of LOIC
+
+                stressTest = new NetworkUtilities.StressTest
+                    (isUDP, packetLimit, packetDelay,
+                    packetContents, port, _IPAddress);
+
+
+                // Delegate events for asynchronous control of Windows Forms
+                stressTest.StressTestFinished += OnStressTestFinished;
+                
+                stressTestThread = new System.Threading.Thread(new
+                    System.Threading.ThreadStart(
+                        stressTest.Start
+                    ));
+                stressTestThread.Start();
+
+                Console.WriteLine("Started stress test thread");
+
+            }
+            else
+            {
+                if (stressTest != null)
+                {
+                    stressTest.Stop();
+                }
+            }
         }
     }
 }

@@ -3,21 +3,145 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NetworkUtils
 {
-    class NetworkUtilities
+    public class NetworkUtilities
     {
+
+        public class ProgressEventArgs : EventArgs
+        {
+            public ProgressEventArgs(int current, int maximum)
+            {
+                this.current = current;
+                this.maximum = maximum;
+            }
+
+            public int current { get; set; }
+            public int maximum { get; set; }
+        }
+
+        public class StressTest
+        {
+            public delegate void StressTestFinishedEventHandler(object source, EventArgs args);
+
+            public event StressTestFinishedEventHandler StressTestFinished;
+
+            private bool running = false;
+            private bool isUDP = false; // True = UDP, False = TCP
+            private int packetLimit = 0;
+            private long packetDelay = 0; // Delay in MS
+            private string packetContents = "";
+            private int port = 0;
+            private int iterator = 0;
+            IPAddress ip = null;
+
+            public StressTest(bool isUDP, int packetLimit, long packetDelay,
+                string packetContents, int port, String _IPAddress)
+            {
+                this.isUDP = isUDP;
+                this.packetLimit = packetLimit;
+                this.packetDelay = packetDelay;
+                this.packetContents = packetContents;
+                this.port = port;
+                ip = NetworkUtilities.StringToIPAddress(_IPAddress);
+
+                // Packet limit <= 0 will result in an infinite loop
+                if (packetLimit > 0)
+                {
+                    iterator = 1;
+                }
+                else
+                {
+                    packetLimit = 1;
+                }
+            }
+
+            public void Run()
+            {
+                // Use correct protocol type
+                ProtocolType protocolType = ProtocolType.Tcp;
+                if (isUDP) protocolType = ProtocolType.Udp;
+
+                IPEndPoint ipep = new IPEndPoint(ip, port);
+                Socket sock = null;
+                try
+                {
+                    if (isUDP)
+                        sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
+                            protocolType);
+                    else
+                        sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
+                            protocolType);
+                }
+                catch (System.Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                    OnStressTestFinished();
+                }
+                byte[] buffer = Encoding.ASCII.GetBytes(packetContents.ToCharArray());
+                for (int i = 0; i < packetLimit; i += iterator)
+                {
+                    if (!running)
+                    {
+                        break;
+                    }
+                    // Fire-and-forget :)
+                    sendPacket(ipep, buffer, sock);
+                }
+                OnStressTestFinished();
+            }
+
+            public void Start()
+            {
+                if (ip == null)
+                {
+                    MessageBox.Show("The IP Address you have entered is invalid! Please enter a valid IP Address and try again.",
+                    "Bad IP Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    OnStressTestFinished();
+                    return;
+                }
+                else
+                {
+                    running = true;
+                    Run();
+                }
+            }
+
+            public void Stop()
+            {
+                running = false;
+            }
+
+            public void sendPacket(IPEndPoint ipep, byte[] buffer, Socket sock)
+            {
+                // TODO: Fire and forget
+                Console.WriteLine("Sent a packet");
+                Console.Out.Flush();
+                sock.SendTo(buffer, ipep);
+            }
+
+            private void OnStressTestFinished()
+            {
+                StressTestFinished(this, EventArgs.Empty);
+            }
+
+
+        }
 
         public class PingQuery
         {
+            
 
             public delegate void PingQueryFinishedEventHandler(object source, EventArgs args);
+            public delegate void PingQueryStatusChangedEventHandler(object source, ProgressEventArgs args);
 
             public event PingQueryFinishedEventHandler PingQueryFinished;
+            public event PingQueryStatusChangedEventHandler PingQueryStatusChanged;
 
             bool running = false;
             int numTimes = 0;
@@ -53,7 +177,7 @@ namespace NetworkUtils
                 {
                     if (!running)
                     {
-                        return;
+                        break;
                     }
                     formReference.AppendTextBox("Pinging " + ip + "...\r\n");
 
@@ -96,6 +220,7 @@ namespace NetworkUtils
                         System.Threading.Thread.Sleep(pingDelay);
                     }
                     numTimesPerformed++;
+                    OnPingQueryStatusChanged(numTimesPerformed, numTimes);
                 }
                 if (numSuccess > 0)
                 {
@@ -112,6 +237,7 @@ namespace NetworkUtils
                 {
                     MessageBox.Show("The IP Address you have entered is invalid! Please enter a valid IP Address and try again.",
                     "Bad IP Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    OnPingQueryFinished();
                     return;
                 }
                 else
@@ -131,6 +257,11 @@ namespace NetworkUtils
             public void OnPingQueryFinished()
             {
                 PingQueryFinished(this, EventArgs.Empty);
+            }
+
+            public void OnPingQueryStatusChanged(int curr, int max)
+            {
+                PingQueryStatusChanged(this, new ProgressEventArgs(curr, max));
             }
 
             public void PingTargetIP(String _IPAddress, int numTimes, int ttl,
