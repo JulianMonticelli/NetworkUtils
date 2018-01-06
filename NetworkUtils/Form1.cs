@@ -15,13 +15,16 @@ namespace NetworkUtils
 
         private bool runningPing = false;
         private bool runningStressTest = false;
+        private bool runningTraceroute = false;
         private bool performingNetworkTask = false;
 
         NetworkUtilities.StressTest stressTest;
         NetworkUtilities.PingQuery pingQuery;
+        NetworkUtilities.Traceroute traceroute;
 
         private System.Threading.Thread pingThread;
         private System.Threading.Thread stressTestThread;
+        private System.Threading.Thread tracerouteThread;
 
         public void OnPingQueryFinished(object source, EventArgs a)
         {
@@ -46,7 +49,6 @@ namespace NetworkUtils
                 Invoke(new Action(() =>
                 {
                     pingProgressBar.Value = (int)(((float)a.current / a.maximum) * 100);
-                    pingProgressBar.Maximum = a.maximum;
                 }
                 ));
             }
@@ -60,6 +62,13 @@ namespace NetworkUtils
             }
         }
 
+        public void OnTracerouteFinished(object source, EventArgs a)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(ToggleTracerouteButton));
+            }
+        }
 
         public void TogglePingButton()
         {
@@ -97,6 +106,25 @@ namespace NetworkUtils
                 stressTestThread = null;
                 stressTestButton.BackColor = Color.Green;
                 stressTestButton.Text = "Fire";
+            }
+        }
+
+        public void ToggleTracerouteButton()
+        {
+            runningTraceroute = !runningTraceroute;
+            performingNetworkTask = runningTraceroute;
+            if (runningTraceroute)
+            {
+                tracerouteButton.BackColor = Color.Red;
+                tracerouteButton.Text = "Stop";
+            }
+            else
+            {
+                traceroute.Stop();
+                traceroute = null;
+                tracerouteThread = null;
+                tracerouteButton.BackColor = Color.Green;
+                tracerouteButton.Text = "Traceroute";
             }
         }
 
@@ -194,6 +222,11 @@ namespace NetworkUtils
         {
             if (!runningStressTest)
             {
+                if (ipRangeCheckbox.Checked)
+                {
+                    MessageBox.Show("IP Range cannot be used for stress testing.", "IP Range not allowed");
+                    return;
+                }
                 bool isUDP = udpRadioButton.Checked;
                 int packetLimit = (int)packetLimitUpDown.Value;
                 int port = (int)portNumberSelector.Value;
@@ -229,6 +262,57 @@ namespace NetworkUtils
                     stressTest.Stop();
                 }
             }
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tracerouteButton_Click(object sender, EventArgs e)
+        {
+            int ttl = (int)tracerouteTTLUpDown.Value;
+            int timeout = (int)tracerouteTimeoutUpDown.Value;
+            if (!runningTraceroute)
+            {
+                if (ipRangeCheckbox.Checked)
+                {
+                    MessageBox.Show("IP Range cannot be used for traceroute.", "IP Range not allowed");
+                    return;
+                }
+                
+                string _IPAddress = IPAddressTextBox1.Text;
+                
+                ToggleTracerouteButton();
+
+                traceroute = new NetworkUtilities.Traceroute
+                    (_IPAddress, ttl, timeout, this);
+
+
+                // Delegate events for asynchronous control of Windows Forms
+                traceroute.TracerouteFinished += OnTracerouteFinished;
+
+                tracerouteThread = new System.Threading.Thread(new
+                    System.Threading.ThreadStart(
+                        traceroute.Start
+                    ));
+                tracerouteThread.Start();
+
+                Console.WriteLine("Started stress test thread");
+
+            }
+            else
+            {
+                if (traceroute != null)
+                {
+                    traceroute.Stop();
+                }
+            }
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

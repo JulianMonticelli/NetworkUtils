@@ -54,11 +54,17 @@
             this.udpRadioButton = new System.Windows.Forms.RadioButton();
             this.tcpRadioButton = new System.Windows.Forms.RadioButton();
             this.IPAddressGroupBox = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.IPAddressTextBox2 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.IPAddress1Label = new System.Windows.Forms.Label();
             this.IPAddressTextBox1 = new System.Windows.Forms.TextBox();
+            this.ipRangeCheckbox = new System.Windows.Forms.CheckBox();
+            this.IPAddressTextBox2 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tracertBox = new System.Windows.Forms.GroupBox();
+            this.tracerouteButton = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tracerouteTimeoutUpDown = new System.Windows.Forms.NumericUpDown();
+            this.tracerouteTTLUpDown = new System.Windows.Forms.NumericUpDown();
             this.pingGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pingDelayPingInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bufferSizePingInput)).BeginInit();
@@ -70,6 +76,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.packetLimitUpDown)).BeginInit();
             this.tcpUdpGroupBox.SuspendLayout();
             this.IPAddressGroupBox.SuspendLayout();
+            this.tracertBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tracerouteTimeoutUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tracerouteTTLUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // outputTextBox
@@ -86,7 +95,7 @@
             this.outputTextBox.ReadOnly = true;
             this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.outputTextBox.ShortcutsEnabled = false;
-            this.outputTextBox.Size = new System.Drawing.Size(580, 98);
+            this.outputTextBox.Size = new System.Drawing.Size(469, 98);
             this.outputTextBox.TabIndex = 0;
             // 
             // pingButton
@@ -121,7 +130,7 @@
             this.pingGroupBox.Controls.Add(this.pingButton);
             this.pingGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.pingGroupBox.ForeColor = System.Drawing.Color.Lime;
-            this.pingGroupBox.Location = new System.Drawing.Point(409, 3);
+            this.pingGroupBox.Location = new System.Drawing.Point(294, 3);
             this.pingGroupBox.Name = "pingGroupBox";
             this.pingGroupBox.Size = new System.Drawing.Size(173, 252);
             this.pingGroupBox.TabIndex = 4;
@@ -412,7 +421,7 @@
             // 
             // IPAddressGroupBox
             // 
-            this.IPAddressGroupBox.Controls.Add(this.checkBox1);
+            this.IPAddressGroupBox.Controls.Add(this.ipRangeCheckbox);
             this.IPAddressGroupBox.Controls.Add(this.IPAddressTextBox2);
             this.IPAddressGroupBox.Controls.Add(this.label1);
             this.IPAddressGroupBox.Controls.Add(this.IPAddress1Label);
@@ -425,40 +434,6 @@
             this.IPAddressGroupBox.TabIndex = 6;
             this.IPAddressGroupBox.TabStop = false;
             this.IPAddressGroupBox.Text = "IP Information";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.checkBox1.ForeColor = System.Drawing.Color.Lime;
-            this.checkBox1.Location = new System.Drawing.Point(10, 114);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.checkBox1.Size = new System.Drawing.Size(85, 21);
-            this.checkBox1.TabIndex = 15;
-            this.checkBox1.Text = "IP Range";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // IPAddressTextBox2
-            // 
-            this.IPAddressTextBox2.BackColor = System.Drawing.Color.Black;
-            this.IPAddressTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.IPAddressTextBox2.ForeColor = System.Drawing.Color.Lime;
-            this.IPAddressTextBox2.Location = new System.Drawing.Point(6, 85);
-            this.IPAddressTextBox2.Name = "IPAddressTextBox2";
-            this.IPAddressTextBox2.Size = new System.Drawing.Size(146, 23);
-            this.IPAddressTextBox2.TabIndex = 3;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.ForeColor = System.Drawing.Color.Lime;
-            this.label1.Location = new System.Drawing.Point(66, 65);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(20, 17);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "to";
             // 
             // IPAddress1Label
             // 
@@ -481,12 +456,133 @@
             this.IPAddressTextBox1.Size = new System.Drawing.Size(146, 23);
             this.IPAddressTextBox1.TabIndex = 0;
             // 
+            // ipRangeCheckbox
+            // 
+            this.ipRangeCheckbox.AutoSize = true;
+            this.ipRangeCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.ipRangeCheckbox.ForeColor = System.Drawing.Color.Lime;
+            this.ipRangeCheckbox.Location = new System.Drawing.Point(10, 114);
+            this.ipRangeCheckbox.Name = "ipRangeCheckbox";
+            this.ipRangeCheckbox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.ipRangeCheckbox.Size = new System.Drawing.Size(85, 21);
+            this.ipRangeCheckbox.TabIndex = 15;
+            this.ipRangeCheckbox.Text = "IP Range";
+            this.ipRangeCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // IPAddressTextBox2
+            // 
+            this.IPAddressTextBox2.BackColor = System.Drawing.Color.Black;
+            this.IPAddressTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.IPAddressTextBox2.ForeColor = System.Drawing.Color.Lime;
+            this.IPAddressTextBox2.Location = new System.Drawing.Point(6, 85);
+            this.IPAddressTextBox2.Name = "IPAddressTextBox2";
+            this.IPAddressTextBox2.Size = new System.Drawing.Size(146, 23);
+            this.IPAddressTextBox2.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label1.ForeColor = System.Drawing.Color.Lime;
+            this.label1.Location = new System.Drawing.Point(66, 65);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(20, 17);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "to";
+            // 
+            // tracertBox
+            // 
+            this.tracertBox.Controls.Add(this.tracerouteTTLUpDown);
+            this.tracertBox.Controls.Add(this.tracerouteTimeoutUpDown);
+            this.tracertBox.Controls.Add(this.label3);
+            this.tracertBox.Controls.Add(this.label2);
+            this.tracertBox.Controls.Add(this.tracerouteButton);
+            this.tracertBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.tracertBox.ForeColor = System.Drawing.Color.Lime;
+            this.tracertBox.Location = new System.Drawing.Point(2, 150);
+            this.tracertBox.Name = "tracertBox";
+            this.tracertBox.Size = new System.Drawing.Size(158, 105);
+            this.tracertBox.TabIndex = 7;
+            this.tracertBox.TabStop = false;
+            this.tracertBox.Text = "Traceroute";
+            this.tracertBox.Enter += new System.EventHandler(this.groupBox2_Enter);
+            // 
+            // tracerouteButton
+            // 
+            this.tracerouteButton.BackColor = System.Drawing.Color.Green;
+            this.tracerouteButton.ForeColor = System.Drawing.Color.White;
+            this.tracerouteButton.Location = new System.Drawing.Point(6, 73);
+            this.tracerouteButton.Name = "tracerouteButton";
+            this.tracerouteButton.Size = new System.Drawing.Size(146, 26);
+            this.tracerouteButton.TabIndex = 0;
+            this.tracerouteButton.Text = "Traceroute";
+            this.tracerouteButton.UseVisualStyleBackColor = false;
+            this.tracerouteButton.Click += new System.EventHandler(this.tracerouteButton_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(118, 19);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(34, 17);
+            this.label2.TabIndex = 20;
+            this.label2.Text = "TTL";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(93, 46);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 17);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Timeout";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
+            // tracerouteTimeoutUpDown
+            // 
+            this.tracerouteTimeoutUpDown.BackColor = System.Drawing.Color.Black;
+            this.tracerouteTimeoutUpDown.ForeColor = System.Drawing.Color.Lime;
+            this.tracerouteTimeoutUpDown.Increment = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.tracerouteTimeoutUpDown.Location = new System.Drawing.Point(6, 44);
+            this.tracerouteTimeoutUpDown.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+            this.tracerouteTimeoutUpDown.Name = "tracerouteTimeoutUpDown";
+            this.tracerouteTimeoutUpDown.Size = new System.Drawing.Size(80, 23);
+            this.tracerouteTimeoutUpDown.TabIndex = 20;
+            // 
+            // tracerouteTTLUpDown
+            // 
+            this.tracerouteTTLUpDown.BackColor = System.Drawing.Color.Black;
+            this.tracerouteTTLUpDown.ForeColor = System.Drawing.Color.Lime;
+            this.tracerouteTTLUpDown.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.tracerouteTTLUpDown.Location = new System.Drawing.Point(6, 18);
+            this.tracerouteTTLUpDown.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+            this.tracerouteTTLUpDown.Name = "tracerouteTTLUpDown";
+            this.tracerouteTTLUpDown.Size = new System.Drawing.Size(80, 23);
+            this.tracerouteTTLUpDown.TabIndex = 21;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(584, 361);
+            this.ClientSize = new System.Drawing.Size(473, 361);
+            this.Controls.Add(this.tracertBox);
             this.Controls.Add(this.IPAddressGroupBox);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pingGroupBox);
@@ -509,6 +605,10 @@
             this.tcpUdpGroupBox.PerformLayout();
             this.IPAddressGroupBox.ResumeLayout(false);
             this.IPAddressGroupBox.PerformLayout();
+            this.tracertBox.ResumeLayout(false);
+            this.tracertBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tracerouteTimeoutUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tracerouteTTLUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -529,10 +629,7 @@
         private System.Windows.Forms.NumericUpDown timeOutPingInput;
         private System.Windows.Forms.CheckBox fragmentPingInput;
         private System.Windows.Forms.TextBox IPAddressTextBox1;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label IPAddress1Label;
-        private System.Windows.Forms.TextBox IPAddressTextBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label pingBufferSizeLabel;
         private System.Windows.Forms.NumericUpDown bufferSizePingInput;
         private System.Windows.Forms.Label pingDelayLabel;
@@ -546,6 +643,15 @@
         private System.Windows.Forms.Button stressTestButton;
         private System.Windows.Forms.Label portLabel;
         private System.Windows.Forms.NumericUpDown portNumberSelector;
+        private System.Windows.Forms.CheckBox ipRangeCheckbox;
+        private System.Windows.Forms.TextBox IPAddressTextBox2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox tracertBox;
+        private System.Windows.Forms.Button tracerouteButton;
+        private System.Windows.Forms.NumericUpDown tracerouteTTLUpDown;
+        private System.Windows.Forms.NumericUpDown tracerouteTimeoutUpDown;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
     }
 }
 
