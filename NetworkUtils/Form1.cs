@@ -165,8 +165,6 @@ namespace NetworkUtils
                     ));
                 pingThread.Start();
 
-                Console.WriteLine("Started ping thread");
-
             }
             else
             {
@@ -189,7 +187,6 @@ namespace NetworkUtils
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("EXCEPTION CAUGHT");
                     Console.WriteLine(e.GetType());
                     Console.WriteLine(e.StackTrace);
                 }
@@ -252,8 +249,6 @@ namespace NetworkUtils
                     ));
                 stressTestThread.Start();
 
-                Console.WriteLine("Started stress test thread");
-
             }
             else
             {
@@ -298,8 +293,6 @@ namespace NetworkUtils
                     ));
                 tracerouteThread.Start();
 
-                Console.WriteLine("Started stress test thread");
-
             }
             else
             {
@@ -313,6 +306,16 @@ namespace NetworkUtils
         private void label3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void clearTextBoxButton_click(object sender, EventArgs e)
+        {
+            this.Invoke(new Action(clearTextBox));
+        }
+
+        private void clearTextBox()
+        {
+            outputTextBox.Text = string.Empty;
         }
     }
 }

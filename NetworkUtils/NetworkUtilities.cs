@@ -402,7 +402,7 @@ namespace NetworkUtils
                     {
                         try
                         {
-                            hostname = Dns.GetHostByAddress(pingReply.Address).HostName;
+                            hostname = Dns.GetHostEntry(pingReply.Address).HostName;
                         }
                         catch (SocketException)
                         {
