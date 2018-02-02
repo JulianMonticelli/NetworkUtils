@@ -17,10 +17,12 @@ namespace NetworkUtils
         private bool runningStressTest = false;
         private bool runningTraceroute = false;
         private bool performingNetworkTask = false;
+        private bool pingQueryIsMulti = false;
 
-        NetworkUtilities.StressTest stressTest;
-        NetworkUtilities.PingQuery pingQuery;
-        NetworkUtilities.Traceroute traceroute;
+        StressTest stressTest;
+        MultiIPPingQuery multiIPPingQuery;
+        PingQuery pingQuery;
+        Traceroute traceroute;
 
         private System.Threading.Thread pingThread;
         private System.Threading.Thread stressTestThread;
@@ -42,7 +44,7 @@ namespace NetworkUtils
             }
         }
 
-        public void OnPingQueryStatusChanged(object source, NetworkUtilities.ProgressEventArgs a)
+        public void OnPingQueryStatusChanged(object source, ProgressEventArgs a)
         {
             if (InvokeRequired)
             {
@@ -81,9 +83,18 @@ namespace NetworkUtils
             }
             else
             {
-                pingQuery.Stop();
-                pingQuery = null;
-                pingThread = null;
+                if (pingQuery != null)
+                {
+                    pingQuery.Stop();
+                    pingQuery = null;
+                    pingThread = null;
+                }
+                else
+                {
+                    multiIPPingQuery.Stop();
+                    multiIPPingQuery = null;
+                    multiIPPingQuery = null;
+                }
                 pingButton.BackColor = Color.Green;
                 pingButton.Text = "Ping";
             }
@@ -145,32 +156,52 @@ namespace NetworkUtils
                 int buffSize = (int)bufferSizePingInput.Value;
                 int pingDelay = (int)pingDelayPingInput.Value;
                 bool fragmentPing = fragmentPingInput.Checked;
-
-
                 TogglePingButton();
 
-                pingQuery = new
-                    NetworkUtilities.PingQuery(IPAddressTextBox1.Text,
-                    numTimes, ttl, timeOut, buffSize, pingDelay,
-                    fragmentPing, this);
+                if (ipRangeCheckbox.Checked)
+                {
+                    multiIPPingQuery = new
+                        MultiIPPingQuery(IPAddressTextBox1.Text,
+                        IPAddressTextBox2.Text, numTimes, ttl, timeOut, buffSize,
+                        pingDelay, fragmentPing, this);
 
-                // Delegate events for asynchronous control of Windows Forms
-                // and update of ping status
-                pingQuery.PingQueryFinished += OnPingQueryFinished;
-                pingQuery.PingQueryStatusChanged += OnPingQueryStatusChanged;
+                    multiIPPingQuery.MultiIPPingQueryFinished += OnPingQueryFinished;
+                    multiIPPingQuery.MultiIPPingQueryStatusChanged += OnPingQueryStatusChanged;
 
-                pingThread = new System.Threading.Thread(new
-                    System.Threading.ThreadStart(
-                        pingQuery.Start
-                    ));
-                pingThread.Start();
+                    pingThread = new System.Threading.Thread(new
+                        System.Threading.ThreadStart(
+                            multiIPPingQuery.Start
+                        ));
+                    pingThread.Start();
+                }
+                else
+                {
+                    pingQuery = new
+                        PingQuery(IPAddressTextBox1.Text,
+                        numTimes, ttl, timeOut, buffSize, pingDelay,
+                        fragmentPing, this);
 
+                    // Delegate events for asynchronous control of Windows Forms
+                    // and update of ping status
+                    pingQuery.PingQueryFinished += OnPingQueryFinished;
+                    pingQuery.PingQueryStatusChanged += OnPingQueryStatusChanged;
+
+                    pingThread = new System.Threading.Thread(new
+                        System.Threading.ThreadStart(
+                            pingQuery.Start
+                        ));
+                    pingThread.Start();
+                }
             }
             else
             {
                 if (pingQuery != null)
                 {
                     pingQuery.Stop();
+                }
+                else if (multiIPPingQuery != null)
+                {
+                    multiIPPingQuery.Stop();
                 }
             }
 
@@ -235,7 +266,7 @@ namespace NetworkUtils
 
                 ToggleStressTestButton();
 
-                stressTest = new NetworkUtilities.StressTest
+                stressTest = new StressTest
                     (isUDP, packetLimit, packetDelay,
                     packetContents, port, _IPAddress, this);
 
@@ -280,8 +311,7 @@ namespace NetworkUtils
                 
                 ToggleTracerouteButton();
 
-                traceroute = new NetworkUtilities.Traceroute
-                    (_IPAddress, ttl, timeout, this);
+                traceroute = new Traceroute(_IPAddress, ttl, timeout, this);
 
 
                 // Delegate events for asynchronous control of Windows Forms

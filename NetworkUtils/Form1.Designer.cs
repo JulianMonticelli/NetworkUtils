@@ -227,6 +227,11 @@
             0,
             0});
             this.timeOutPingInput.Location = new System.Drawing.Point(6, 80);
+            this.timeOutPingInput.Maximum = new decimal(new int[] {
+            120000,
+            0,
+            0,
+            0});
             this.timeOutPingInput.Name = "timeOutPingInput";
             this.timeOutPingInput.Size = new System.Drawing.Size(63, 23);
             this.timeOutPingInput.TabIndex = 13;
